@@ -9,7 +9,11 @@ module.exports = function (url, routes) {
     if (path.length > 1 && path[path.length - 1] === '/') {
       path.pop();
     }
+    if (path[0] === '/' && path[1] === '/') {
+      path.shift();
+    }
     path = path.join('');
+    console.log(path);
     var route = utils.findMatchingRoute(routes, path);
     var params = utils.parseParams(route, path);
 

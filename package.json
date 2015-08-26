@@ -1,6 +1,6 @@
 {
   "name": "url-mapper",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Take a URL and map to functions, parsing params",
   "main": "index.js",
   "scripts": {
