@@ -1,8 +1,8 @@
-var Router             = require('../index');
-var _match             = Router._match;
-var _findMatchingRoute = Router._findMatchingRoute;
-var _parseParams       = Router._parseParams;
-var _parsePath         = Router._parsePath;
+var utils             = require('../src/utils');
+var findMatchingRoute = utils.findMatchingRoute;
+var match             = utils.match;
+var parseParams       = utils.parseParams;
+var parseQueryString  = utils.parseQueryString;
 
 module.exports = {
   setUp: function(callback) {
@@ -13,66 +13,17 @@ module.exports = {
       '/foo/:id/baz':       function(arg){ return 'fooIdBazCallback ' + arg; },
       '/foo/:id/baz/:guid': function(arg){ return 'fooIdBazGuidCallback ' + arg; }
     };
-    this.router = Router(this.routes, {});
     callback();
   },
 
-  tearDown: function(callback) {
-    this.router = null;
-    callback();
-  },
-
-  set: function(test) {
-    history = {pushState: function(_,url) { return 'set ' + url; }};
-    this.router = Router(this.routes, history);
-
-    test.equal(this.router.set('/foo/bar'), 'set /foo/bar');
-    test.done();
-  },
-
-  setSilent: function(test) {
-    history = {pushState: function(_,url) { return 'set ' + url; }};
-    this.router = Router(this.routes, history);
-
-    test.equal(this.router.setSilent('/foo/bar'), 'set /foo/bar');
-    test.ok(this.router.isSilent);
-    test.done();
-  },
-
-  _matchRoute: function(test) {
-    var location = {pathname: '/foo/123/baz/abc'};
-    var matchedRoute = this.router._matchRoute(this.routes,location);
-
-    test.deepEqual(matchedRoute, 'fooIdBazGuidCallback ' + location);
-    test.done();
-  },
-
-  _parsePath: function(test) {
-    var location = {pathname: '/foo/123/baz/abc'};
-
-    test.deepEqual(_parsePath('/foo/:id/baz/:guid', location), {
-      pathname: '/foo/123/baz/abc', 
-      params: { id: '123', guid: 'abc' }
-    });
-
-    test.done();
-  },
-
-  _invokeCallback: function (test) {
-    callbackValue = this.router._invokeCallback(this.routes, '/foo', "location");
-
-    test.equal(callbackValue, 'fooCallback location');
-    test.done();
-  },
-
-  _findMatchingRoute: function(test) {
-    var activeRoute = _findMatchingRoute(this.routes, '/foo/123');
+  findMatchingRoute: function(test) {
+    var activeRoute = findMatchingRoute(this.routes, '/foo/123');
     test.equal(activeRoute, '/foo/:id');
 
     test.done();
   },
 
-  _match: function(test) {
+  match: function(test) {
     // data
     var routesFixture = {
       '/': '/',
@@ -85,11 +36,11 @@ module.exports = {
     var routes = Object.keys(routesFixture);
 
     // assertion helper
-    function assertMatch(route, location, nonMatchingRoutes) {
-      test.ok(_match(route, location));
+    function assertMatch(route, pathname, nonMatchingRoutes) {
+      test.ok(match(route, pathname));
 
-      nonMatchingRoutes.forEach(function(route, location) {
-        test.ok(!_match(route, location));
+      nonMatchingRoutes.forEach(function(route, pathname) {
+        test.ok(!match(route, pathname));
       });
     }
 
@@ -98,23 +49,47 @@ module.exports = {
       var mutableRoutes  = routes.slice()
       var index          = mutableRoutes.indexOf(route);
       var routeUnderTest = mutableRoutes.splice(index, 1).shift();
-      var location       = routesFixture[route];
+      var pathname       = routesFixture[route];
 
-      assertMatch(routeUnderTest, location, mutableRoutes);
+      assertMatch(routeUnderTest, pathname, mutableRoutes);
     });
 
     test.done();
   },
 
-  _parseParams: function(test) {
-    var nestedParams = _parseParams('/foo/:id/baz/:guid', '/foo/123/baz/abc');
-    var rootParams   = _parseParams('/', '/');
-    var fooParams    = _parseParams('/foo', '/foo');
+  parseParams: function(test) {
+    var nestedParams = parseParams('/foo/:id/baz/:guid', '/foo/123/baz/abc');
+    var rootParams   = parseParams('/', '/');
+    var fooParams    = parseParams('/foo', '/foo');
 
     test.deepEqual(nestedParams, {id: '123', guid: 'abc'});
     test.deepEqual(rootParams, {});
     test.deepEqual(fooParams, {});
 
+    test.done();
+  },
+
+  parseQueryString: function(test) {
+    var queryString = 'current_practice_user_uid%5B%5D=ce5c6f1040bc4ad2b9469669c0850046&' +
+                      'urgent%5B%5D=true&urgent%5B%5D=false&complete%5B%5D=true&complete%5B%5D=false&completed_at_gte=&' +
+                      'completed_at_lte=&due_date_gte=&due_date_lte=&patient_name=&patient_guid=&practice_user_uid=&' +
+                      'preset=dueToday&careteam_practice_user_uids=&search_term='
+    var parsedObject = {
+      current_practice_user_uid:   [ 'ce5c6f1040bc4ad2b9469669c0850046' ],
+      urgent:                      [ 'true', 'false' ],
+      complete:                    [ 'true', 'false' ],
+      completed_at_gte:            '',
+      completed_at_lte:            '',
+      due_date_gte:                '',
+      due_date_lte:                '',
+      patient_name:                '',
+      patient_guid:                '',
+      practice_user_uid:           '',
+      preset:                      'dueToday',
+      careteam_practice_user_uids: '',
+      search_term:                 '' }
+
+    test.deepEqual(parseQueryString(queryString), parsedObject);
     test.done();
   }
 };
