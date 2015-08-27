@@ -1,3 +1,5 @@
+var qs = require('qs');
+
 var utils = {
   findMatchingRoute: function (routes, pathname) {
     return Object.keys(routes).filter(function(route) {
@@ -22,6 +24,9 @@ var utils = {
   asRegex: function (route) {
     var regexableRoute = '^' + route.replace(/:(\w+)/g, "(:?\\w+)") + '$';
     return new RegExp(regexableRoute, 'g');
+  },
+  parseQueryString: function(queryString) {
+    return qs.parse(queryString);
   }
 };
 

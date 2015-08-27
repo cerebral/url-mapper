@@ -17,9 +17,14 @@ module.exports = function (url, routes) {
     var route = utils.findMatchingRoute(routes, path);
     var params = utils.parseParams(route, path);
 
+    if (var queryString = location.search) {
+      var query = utils.parseQueryString(queryString.substr(1));
+    }
+
     routes[route]({
       path: path,
-      params: params
+      params: params,
+      query: query
     });
 
 };
