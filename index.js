@@ -13,11 +13,11 @@ module.exports = function (url, routes) {
       path.shift();
     }
     path = path.join('');
-    console.log(path);
     var route = utils.findMatchingRoute(routes, path);
     var params = utils.parseParams(route, path);
+    var queryString = location.search;
 
-    if (var queryString = location.search) {
+    if (queryString) {
       var query = utils.parseQueryString(queryString.substr(1));
     }
 
