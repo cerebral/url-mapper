@@ -19,45 +19,44 @@ function isMatch(re, path, keys) {
   }
 
   return params;
-};
+}
 
 module.exports = function (url, routes) {
 
-    // This logic should probably be better, has to Handle
-    // /#/foo, #/foo, /foo, /foo/, /#/foo/, #/foo/
-    var path = url.replace(location.origin, '').replace('#', '').replace('#', '').split('');
-    if (path.length > 1 && path[path.length - 1] === '/') {
-      path.pop();
-    }
-    if (path[0] === '/' && path[1] === '/') {
-      path.shift();
-    }
-    path = path.join('');
+  // This logic should probably be better, has to Handle
+  // /#/foo, #/foo, /foo, /foo/, /#/foo/, #/foo/
+  var path = url.replace(location.origin, '').replace('#', '').replace('#', '').split('');
+  if (path.length > 1 && path[path.length - 1] === '/') {
+    path.pop();
+  }
+  if (path[0] === '/' && path[1] === '/') {
+    path.shift();
+  }
+  path = path.join('');
 
-    var params = null;
-    var route = null;
-    for (route in routes) {
-      if (!cache[route]) {
-        var keys = [];
-        var re = pathtoRegexp(route === '*' ? '(.*)' : route, keys)
-        cache[route] = {
-          keys: keys,
-          re: re
-        }
-      }
-      params = isMatch(cache[route].re, path, cache[route].keys);
-      if (params) {
-        break;
+  var params = {};
+  var route = {};
+  for (route in routes) {
+    if (!cache[route]) {
+      var keys = [];
+      var re = pathtoRegexp(route === '*' ? '(.*)' : route, keys)
+      cache[route] = {
+        keys: keys,
+        re: re
       }
     }
+    params = isMatch(cache[route].re, path, cache[route].keys);
+    if (params) {
+      var queryString = location.search;
+      var query = queryString ? qs.parse(queryString.substr(1)) : {};
 
-    var queryString = location.search;
-    var query = queryString ? qs.parse(queryString.substr(1)) : {};
-
-    routes[route]({
-      path: path,
-      params: params,
-      query: query
-    });
+      routes[route]({
+        path: path,
+        params: params,
+        query: query
+      });
+      break;
+    }
+  }
 
 };

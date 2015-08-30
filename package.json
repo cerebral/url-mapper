@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --devtool eval --progress --colors --content-base build --history-api-fallback",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nodeunit tests"
   },
   "repository": {
     "type": "git",
