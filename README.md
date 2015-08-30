@@ -8,8 +8,11 @@ const someFunc = function (data) {
   data // {path: '/foo', params: {id: '123'}, query: {foo: 'bar'}}
 };
 
+const notFoundFunc = function (data) { };
+
 route(location.origin + '/foo/123', {
-  '/foo/:id': someFunc
+  '/foo/:id': someFunc,
+  '*': notFoundFunc
 });
 ```
 **url-mapper** passes an object representing the parsed URL to your route callbacks. Given the URL `http://www.bigapp.com/foo/123?bar=baz` and a matching route `/foo/:id`, your callbacks will receive:
