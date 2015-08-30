@@ -36,6 +36,7 @@
     "webpack-dev-server": "^1.10.1"
   },
   "dependencies": {
+    "path-to-regexp": "^1.2.1",
     "qs": "^4.0.0"
   }
 }
