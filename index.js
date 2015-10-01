@@ -1,7 +1,7 @@
 'use strict';
 var qs = require('qs');
 var pathtoRegexp = require('path-to-regexp');
-
+var location = window.history.location || window.location;
 var cache = {};
 
 function isMatch(re, path, keys) {
