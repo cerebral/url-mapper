@@ -4,6 +4,10 @@ var pathtoRegexp = require('path-to-regexp');
 var location = window.history.location || window.location;
 var cache = {};
 
+if (!location.origin) {
+  location.origin = location.protocol + "//" + location.hostname + (location.port ? ':' + location.port: '');
+}
+
 function isMatch(re, path, keys) {
   var match = re.exec(decodeURIComponent(path));
   if (!match) { return null; }
