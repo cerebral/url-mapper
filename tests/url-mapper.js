@@ -2,10 +2,6 @@ var Router = require('../index');
 
 module.exports = {
   setUp: function(callback) {
-    global.location = {
-      origin: 'http://localhost/',
-      search: ''
-    };
     self = this;
     this.callbackInput = {};
     var routeCallback = function (input) {
@@ -18,13 +14,13 @@ module.exports = {
       '/foo/:id/baz':         routeCallback,
       '/foo/:id/baz/:guid':   routeCallback,
       '/encode/:email/:hash': routeCallback,
+      '/query':               routeCallback,
       '*':                    routeCallback
     };
     callback();
   },
 
   tearDown: function (callback) {
-    delete global.location;
     delete this.callbackInput;
     callback();
   },
@@ -61,6 +57,54 @@ module.exports = {
     test.done();
   },
 
+  routeQuery: function (test) {
+    Router('/query?foo=bar', this.routes);
+    test.equals(this.callbackInput.path, '/query');
+    test.deepEqual(this.callbackInput.params, {});
+    test.deepEqual(this.callbackInput.query, {foo: 'bar'});
+    test.done();
+  },
+
+  routeQueryWithEndingSlash: function (test) {
+    Router('/query/?foo=bar', this.routes);
+    test.equals(this.callbackInput.path, '/query/');
+    test.deepEqual(this.callbackInput.params, {});
+    test.deepEqual(this.callbackInput.query, {foo: 'bar'});
+    test.done();
+  },
+
+  routeFullUrl: function (test) {
+    Router('http://www.example.com/foo', this.routes);
+    test.equals(this.callbackInput.path, '/foo');
+    test.deepEqual(this.callbackInput.params, {});
+    test.deepEqual(this.callbackInput.query, {});
+    test.done();
+  },
+
+  routeHashUrl: function (test) {
+    Router('http://www.example.com/#/foo', this.routes);
+    test.equals(this.callbackInput.path, '/foo');
+    test.deepEqual(this.callbackInput.params, {});
+    test.deepEqual(this.callbackInput.query, {});
+    test.done();
+  },
+
+  routeEndingSlash: function (test) {
+    Router('http://www.example.com/#/foo', this.routes);
+    test.equals(this.callbackInput.path, '/foo');
+    test.deepEqual(this.callbackInput.params, {});
+    test.deepEqual(this.callbackInput.query, {});
+    test.done();
+  },
+
+  routeEndingSlashHash: function (test) {
+    Router('http://www.example.com/#/foo/', this.routes);
+    test.equals(this.callbackInput.path, '/foo');
+    test.deepEqual(this.callbackInput.params, {});
+    test.deepEqual(this.callbackInput.query, {});
+    test.done();
+  },
+
   catchAll: function (test) {
     Router('/missing', this.routes);
     test.equals(this.callbackInput.path, '/missing');
@@ -70,11 +114,11 @@ module.exports = {
   },
 
   parseQueryString: function(test) {
-    global.location.search = '?current_practice_user_uid%5B%5D=ce5c6f1040bc4ad2b9469669c0850046&' +
+    var query = '?current_practice_user_uid%5B%5D=ce5c6f1040bc4ad2b9469669c0850046&' +
       'urgent%5B%5D=true&urgent%5B%5D=false&complete%5B%5D=true&complete%5B%5D=false&completed_at_gte=&' +
       'completed_at_lte=&due_date_gte=&due_date_lte=&patient_name=&patient_guid=&practice_user_uid=&' +
       'preset=dueToday&careteam_practice_user_uids=&search_term='
-    Router('/foo', this.routes);
+    Router('/foo' + query, this.routes);
     var parsedObject = {
       current_practice_user_uid:   [ 'ce5c6f1040bc4ad2b9469669c0850046' ],
       urgent:                      [ 'true', 'false' ],

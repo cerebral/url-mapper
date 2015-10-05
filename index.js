@@ -1,12 +1,7 @@
 'use strict';
 var qs = require('qs');
 var pathtoRegexp = require('path-to-regexp');
-var location = window.history.location || window.location;
 var cache = {};
-
-if (!location.origin) {
-  location.origin = location.protocol + "//" + location.hostname + (location.port ? ':' + location.port: '');
-}
 
 function isMatch(re, path, keys) {
   var match = re.exec(decodeURIComponent(path));
@@ -27,9 +22,17 @@ function isMatch(re, path, keys) {
 
 module.exports = function (url, routes) {
 
+  // TODO: Normalize URL without using location.origin
+  if (~url.indexOf('//')) {
+    url = url.replace('//', '~'); // To split correctly on next line we replace protocol
+    var splitUrl = url.split('/');
+    splitUrl.shift(); // Remove http://www.example.com
+    url = '/' + splitUrl.join('/'); // Bring it back together
+  }
+
   // This logic should probably be better, has to Handle
   // /#/foo, #/foo, /foo, /foo/, /#/foo/, #/foo/
-  var path = url.replace(location.origin, '').replace('#', '').replace('#', '').split('');
+  var path = url.replace('#', '').replace('#', '').split('');
   if (path.length > 1 && path[path.length - 1] === '/') {
     path.pop();
   }
@@ -40,6 +43,13 @@ module.exports = function (url, routes) {
 
   var params = {};
   var route = {};
+  var queryString = null;
+
+  if (~path.indexOf('?')) {
+    queryString = path.split('?')[1];
+    path = path.split('?')[0];
+  }
+
   for (route in routes) {
     if (!cache[route]) {
       var keys = [];
@@ -51,8 +61,7 @@ module.exports = function (url, routes) {
     }
     params = isMatch(cache[route].re, path, cache[route].keys);
     if (params) {
-      var queryString = location.search;
-      var query = queryString ? qs.parse(queryString.substr(1)) : {};
+      var query = queryString ? qs.parse(queryString) : {};
 
       routes[route]({
         path: path,
