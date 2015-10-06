@@ -64,6 +64,7 @@ module.exports = function (url, routes) {
       var query = queryString ? qs.parse(queryString) : {};
 
       routes[route]({
+        url: url,
         path: path,
         params: params,
         query: query

@@ -5,7 +5,7 @@ Take a URL and map to functions, parsing params
 import route from 'url-mapper';
 
 const someFunc = function (data) {
-  data // {path: '/foo', params: {id: '123'}, query: {foo: 'bar'}}
+  data // {url: '/foo/123?foo=bar', path: '/foo', params: {id: '123'}, query: {foo: 'bar'}}
 };
 
 const notFoundFunc = function (data) { };
@@ -18,7 +18,8 @@ route(location.origin + '/foo/123', {
 **url-mapper** passes an object representing the parsed URL to your route callbacks. Given the URL `http://www.bigapp.com/foo/123?bar=baz` and a matching route `/foo/:id`, your callbacks will receive:
 ```js
 {
-  path: '/foo',
+  url: '/foo/123?bar=baz',
+  path: '/foo/123',
   params: {id: 123},
   query: {bar: 'baz'}
 }
