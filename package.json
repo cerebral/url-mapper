@@ -1,6 +1,6 @@
 {
   "name": "url-mapper",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Take a URL and map to functions, parsing params",
   "main": "index.js",
   "scripts": {
@@ -36,7 +36,9 @@
     "webpack-dev-server": "^1.10.1"
   },
   "dependencies": {
-    "path-to-regexp": "^1.2.1",
     "qs": "^4.0.0"
+  },
+  "peerDependencies": {
+    "path-to-regexp": "^1.2.1",
   }
 }
