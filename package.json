@@ -39,6 +39,6 @@
     "qs": "^4.0.0"
   },
   "peerDependencies": {
-    "path-to-regexp": "^1.2.1",
+    "path-to-regexp": "^1.2.1"
   }
 }
