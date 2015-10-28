@@ -44,6 +44,7 @@ module.exports = function (url, routes) {
   var params = {};
   var route = {};
   var queryString = null;
+  var matchedRoute;
 
   if (~path.indexOf('?')) {
     queryString = path.split('?')[1];
@@ -69,8 +70,12 @@ module.exports = function (url, routes) {
         params: params,
         query: query
       });
+
+      matchedRoute = route;
       break;
     }
   }
+
+  return matchedRoute;
 
 };

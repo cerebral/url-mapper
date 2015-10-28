@@ -26,7 +26,7 @@ module.exports = {
   },
 
   routeToHome: function (test) {
-    Router('/', this.routes);
+    test.equals(Router('/', this.routes), '/');
     test.equals(this.callbackInput.url, '/');
     test.equals(this.callbackInput.path, '/');
     test.deepEqual(this.callbackInput.params, {});
@@ -35,7 +35,7 @@ module.exports = {
   },
 
   getId: function (test) {
-    Router('/foo/99', this.routes);
+    test.equals(Router('/foo/99', this.routes), '/foo/:id');
     test.equals(this.callbackInput.url, '/foo/99');
     test.equals(this.callbackInput.path, '/foo/99');
     test.deepEqual(this.callbackInput.params, { id: '99' });
@@ -44,7 +44,7 @@ module.exports = {
   },
 
   getIdAndGuid: function (test) {
-    Router('/foo/99/baz/ad8b0483-9642-479a-a234-fb0bf21cb294', this.routes);
+    test.equals(Router('/foo/99/baz/ad8b0483-9642-479a-a234-fb0bf21cb294', this.routes), '/foo/:id/baz/:guid');
     test.equals(this.callbackInput.url, '/foo/99/baz/ad8b0483-9642-479a-a234-fb0bf21cb294');
     test.equals(this.callbackInput.path, '/foo/99/baz/ad8b0483-9642-479a-a234-fb0bf21cb294');
     test.deepEqual(this.callbackInput.params, { id: '99', guid: 'ad8b0483-9642-479a-a234-fb0bf21cb294' });
@@ -53,7 +53,7 @@ module.exports = {
   },
 
   getUrlEncodedParams: function (test) {
-    Router('/encode/test%40test.com/766b8ba4ccfdaf60d0925b', this.routes);
+    test.equals(Router('/encode/test%40test.com/766b8ba4ccfdaf60d0925b', this.routes), '/encode/:email/:hash');
     test.equals(this.callbackInput.url, '/encode/test%40test.com/766b8ba4ccfdaf60d0925b');
     test.equals(this.callbackInput.path, '/encode/test%40test.com/766b8ba4ccfdaf60d0925b');
     test.deepEqual(this.callbackInput.params, { email: 'test@test.com', hash: '766b8ba4ccfdaf60d0925b' });
@@ -62,7 +62,7 @@ module.exports = {
   },
 
   routeQuery: function (test) {
-    Router('/query?foo=bar', this.routes);
+    test.equals(Router('/query?foo=bar', this.routes), '/query');
     test.equals(this.callbackInput.url, '/query?foo=bar');
     test.equals(this.callbackInput.path, '/query');
     test.deepEqual(this.callbackInput.params, {});
@@ -71,7 +71,7 @@ module.exports = {
   },
 
   routeQueryWithEndingSlash: function (test) {
-    Router('/query/?foo=bar', this.routes);
+    test.equals(Router('/query/?foo=bar', this.routes), '/query');
     test.equals(this.callbackInput.url, '/query/?foo=bar');
     test.equals(this.callbackInput.path, '/query/');
     test.deepEqual(this.callbackInput.params, {});
@@ -80,7 +80,7 @@ module.exports = {
   },
 
   routeFullUrl: function (test) {
-    Router('http://www.example.com/foo', this.routes);
+    test.equals(Router('http://www.example.com/foo', this.routes), '/foo');
     test.equals(this.callbackInput.url, '/foo');
     test.equals(this.callbackInput.path, '/foo');
     test.deepEqual(this.callbackInput.params, {});
@@ -89,7 +89,7 @@ module.exports = {
   },
 
   routeHashUrl: function (test) {
-    Router('http://www.example.com/#/foo', this.routes);
+    test.equals(Router('http://www.example.com/#/foo', this.routes), '/foo');
     test.equals(this.callbackInput.url, '/#/foo');
     test.equals(this.callbackInput.path, '/foo');
     test.deepEqual(this.callbackInput.params, {});
@@ -98,7 +98,7 @@ module.exports = {
   },
 
   routeEndingSlash: function (test) {
-    Router('http://www.example.com/#/foo', this.routes);
+    test.equals(Router('http://www.example.com/#/foo', this.routes), '/foo');
     test.equals(this.callbackInput.url, '/#/foo');
     test.equals(this.callbackInput.path, '/foo');
     test.deepEqual(this.callbackInput.params, {});
@@ -107,7 +107,7 @@ module.exports = {
   },
 
   routeEndingSlashHash: function (test) {
-    Router('http://www.example.com/#/foo/', this.routes);
+    test.equals(Router('http://www.example.com/#/foo/', this.routes), '/foo');
     test.equals(this.callbackInput.url, '/#/foo/');
     test.equals(this.callbackInput.path, '/foo');
     test.deepEqual(this.callbackInput.params, {});
@@ -116,7 +116,7 @@ module.exports = {
   },
 
   catchAll: function (test) {
-    Router('/missing', this.routes);
+    test.equals(Router('/missing', this.routes), '*');
     test.equals(this.callbackInput.url, '/missing');
     test.equals(this.callbackInput.path, '/missing');
     test.deepEqual(this.callbackInput.params, { '0': '/missing' });
@@ -129,7 +129,7 @@ module.exports = {
       'urgent%5B%5D=true&urgent%5B%5D=false&complete%5B%5D=true&complete%5B%5D=false&completed_at_gte=&' +
       'completed_at_lte=&due_date_gte=&due_date_lte=&patient_name=&patient_guid=&practice_user_uid=&' +
       'preset=dueToday&careteam_practice_user_uids=&search_term='
-    Router('/foo' + query, this.routes);
+    test.equals(Router('/foo' + query, this.routes), '/foo');
     var parsedObject = {
       current_practice_user_uid:   [ 'ce5c6f1040bc4ad2b9469669c0850046' ],
       urgent:                      [ 'true', 'false' ],
@@ -146,6 +146,16 @@ module.exports = {
       search_term:                 '' }
 
     test.deepEqual(this.callbackInput.query, parsedObject);
+    test.done();
+  },
+
+  missed: function(test) {
+    var routes = {
+      '/existing': function(){
+        test.ok(false);
+      } 
+    };
+    test.equals(Router('/missing', routes), undefined);
     test.done();
   }
 };
