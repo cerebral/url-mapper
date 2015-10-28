@@ -37,7 +37,7 @@ module.exports = function (url, routes) {
   for (route in routes) {
     if (!cache[route]) {
       var keys = [];
-      var re = pathtoRegexp(route === '*' ? '(.*)' : route, keys)
+      var re = pathtoRegexp(route, keys)
       cache[route] = {
         keys: keys,
         re: re
