@@ -26,11 +26,17 @@ module.exports = function (url, routes) {
 
   var params = {};
   var route = {};
+  var hash = null;
   var queryString = null;
   var matchedRoute;
 
+  if (~path.indexOf('#')) {
+    hash = path.split(/#(.+)/)[1];
+    path = path.split('#')[0];
+  }
+
   if (~path.indexOf('?')) {
-    queryString = path.split('?')[1];
+    queryString = path.split(/\?(.+)/)[1];
     path = path.split('?')[0];
   }
 
@@ -50,6 +56,7 @@ module.exports = function (url, routes) {
       routes[route]({
         url: url,
         path: path,
+        hash: hash || '',
         params: params,
         query: query
       });

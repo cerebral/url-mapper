@@ -29,6 +29,7 @@ module.exports = {
     test.equals(Router('/', this.routes), '/');
     test.equals(this.callbackInput.url, '/');
     test.equals(this.callbackInput.path, '/');
+    test.equals(this.callbackInput.hash, '');
     test.deepEqual(this.callbackInput.params, {});
     test.deepEqual(this.callbackInput.query, {});
     test.done();
@@ -38,6 +39,7 @@ module.exports = {
     test.equals(Router('/foo/99', this.routes), '/foo/:id');
     test.equals(this.callbackInput.url, '/foo/99');
     test.equals(this.callbackInput.path, '/foo/99');
+    test.equals(this.callbackInput.hash, '');
     test.deepEqual(this.callbackInput.params, { id: '99' });
     test.deepEqual(this.callbackInput.query, {});
     test.done();
@@ -47,6 +49,7 @@ module.exports = {
     test.equals(Router('/foo/99/baz/ad8b0483-9642-479a-a234-fb0bf21cb294', this.routes), '/foo/:id/baz/:guid');
     test.equals(this.callbackInput.url, '/foo/99/baz/ad8b0483-9642-479a-a234-fb0bf21cb294');
     test.equals(this.callbackInput.path, '/foo/99/baz/ad8b0483-9642-479a-a234-fb0bf21cb294');
+    test.equals(this.callbackInput.hash, '');
     test.deepEqual(this.callbackInput.params, { id: '99', guid: 'ad8b0483-9642-479a-a234-fb0bf21cb294' });
     test.deepEqual(this.callbackInput.query, {});
     test.done();
@@ -56,6 +59,7 @@ module.exports = {
     test.equals(Router('/encode/test%40test.com/766b8ba4ccfdaf60d0925b', this.routes), '/encode/:email/:hash');
     test.equals(this.callbackInput.url, '/encode/test%40test.com/766b8ba4ccfdaf60d0925b');
     test.equals(this.callbackInput.path, '/encode/test%40test.com/766b8ba4ccfdaf60d0925b');
+    test.equals(this.callbackInput.hash, '');
     test.deepEqual(this.callbackInput.params, { email: 'test@test.com', hash: '766b8ba4ccfdaf60d0925b' });
     test.deepEqual(this.callbackInput.query, {});
     test.done();
@@ -65,6 +69,7 @@ module.exports = {
     test.equals(Router('/query?foo=bar', this.routes), '/query');
     test.equals(this.callbackInput.url, '/query?foo=bar');
     test.equals(this.callbackInput.path, '/query');
+    test.equals(this.callbackInput.hash, '');
     test.deepEqual(this.callbackInput.params, {});
     test.deepEqual(this.callbackInput.query, {foo: 'bar'});
     test.done();
@@ -74,6 +79,27 @@ module.exports = {
     test.equals(Router('/query/?foo=bar', this.routes), '/query');
     test.equals(this.callbackInput.url, '/query/?foo=bar');
     test.equals(this.callbackInput.path, '/query/');
+    test.equals(this.callbackInput.hash, '');
+    test.deepEqual(this.callbackInput.params, {});
+    test.deepEqual(this.callbackInput.query, {foo: 'bar'});
+    test.done();
+  },
+
+  routeHash: function(test) {
+    test.equals(Router('/foo#bar', this.routes), '/foo');
+    test.equals(this.callbackInput.url, '/foo#bar');
+    test.equals(this.callbackInput.path, '/foo');
+    test.equals(this.callbackInput.hash, 'bar');
+    test.deepEqual(this.callbackInput.params, {});
+    test.deepEqual(this.callbackInput.query, {});
+    test.done();
+  },
+
+  routeQueryWithHash: function (test) {
+    test.equals(Router('/query?foo=bar#baz', this.routes), '/query');
+    test.equals(this.callbackInput.url, '/query?foo=bar#baz');
+    test.equals(this.callbackInput.path, '/query');
+    test.equals(this.callbackInput.hash, 'baz');
     test.deepEqual(this.callbackInput.params, {});
     test.deepEqual(this.callbackInput.query, {foo: 'bar'});
     test.done();
@@ -83,6 +109,7 @@ module.exports = {
     test.equals(Router('/missing', this.routes), '*');
     test.equals(this.callbackInput.url, '/missing');
     test.equals(this.callbackInput.path, '/missing');
+    test.equals(this.callbackInput.hash, '');
     test.deepEqual(this.callbackInput.params, { '0': '/missing' });
     test.deepEqual(this.callbackInput.query, {});
     test.done();
@@ -120,6 +147,7 @@ module.exports = {
       } 
     };
     test.equals(Router('/missing', routes), undefined);
+    test.deepEqual(this.callbackInput, {});
     test.done();
   }
 };
