@@ -22,24 +22,7 @@ function isMatch(re, path, keys) {
 
 module.exports = function (url, routes) {
 
-  // TODO: Normalize URL without using location.origin
-  if (~url.indexOf('//')) {
-    url = url.replace('//', '~'); // To split correctly on next line we replace protocol
-    var splitUrl = url.split('/');
-    splitUrl.shift(); // Remove http://www.example.com
-    url = '/' + splitUrl.join('/'); // Bring it back together
-  }
-
-  // This logic should probably be better, has to Handle
-  // /#/foo, #/foo, /foo, /foo/, /#/foo/, #/foo/
-  var path = url.replace('#', '').replace('#', '').split('');
-  if (path.length > 1 && path[path.length - 1] === '/') {
-    path.pop();
-  }
-  if (path[0] === '/' && path[1] === '/') {
-    path.shift();
-  }
-  path = path.join('');
+  var path = url;
 
   var params = {};
   var route = {};
@@ -54,7 +37,7 @@ module.exports = function (url, routes) {
   for (route in routes) {
     if (!cache[route]) {
       var keys = [];
-      var re = pathtoRegexp(route === '*' ? '(.*)' : route, keys)
+      var re = pathtoRegexp(route, keys)
       cache[route] = {
         keys: keys,
         re: re
