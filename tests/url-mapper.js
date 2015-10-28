@@ -79,42 +79,6 @@ module.exports = {
     test.done();
   },
 
-  routeFullUrl: function (test) {
-    test.equals(Router('http://www.example.com/foo', this.routes), '/foo');
-    test.equals(this.callbackInput.url, '/foo');
-    test.equals(this.callbackInput.path, '/foo');
-    test.deepEqual(this.callbackInput.params, {});
-    test.deepEqual(this.callbackInput.query, {});
-    test.done();
-  },
-
-  routeHashUrl: function (test) {
-    test.equals(Router('http://www.example.com/#/foo', this.routes), '/foo');
-    test.equals(this.callbackInput.url, '/#/foo');
-    test.equals(this.callbackInput.path, '/foo');
-    test.deepEqual(this.callbackInput.params, {});
-    test.deepEqual(this.callbackInput.query, {});
-    test.done();
-  },
-
-  routeEndingSlash: function (test) {
-    test.equals(Router('http://www.example.com/#/foo', this.routes), '/foo');
-    test.equals(this.callbackInput.url, '/#/foo');
-    test.equals(this.callbackInput.path, '/foo');
-    test.deepEqual(this.callbackInput.params, {});
-    test.deepEqual(this.callbackInput.query, {});
-    test.done();
-  },
-
-  routeEndingSlashHash: function (test) {
-    test.equals(Router('http://www.example.com/#/foo/', this.routes), '/foo');
-    test.equals(this.callbackInput.url, '/#/foo/');
-    test.equals(this.callbackInput.path, '/foo');
-    test.deepEqual(this.callbackInput.params, {});
-    test.deepEqual(this.callbackInput.query, {});
-    test.done();
-  },
-
   catchAll: function (test) {
     test.equals(Router('/missing', this.routes), '*');
     test.equals(this.callbackInput.url, '/missing');
