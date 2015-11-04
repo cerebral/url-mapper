@@ -29,6 +29,7 @@ module.exports = function (url, routes) {
   var hash = null;
   var queryString = null;
   var matchedRoute;
+  var result = undefined;
 
   if (~path.indexOf('#')) {
     hash = path.split(/#(.+)/)[1];
@@ -53,7 +54,7 @@ module.exports = function (url, routes) {
     if (params) {
       var query = queryString ? qs.parse(queryString) : {};
 
-      routes[route]({
+      result = routes[route]({
         url: url,
         path: path,
         hash: hash || '',
@@ -66,6 +67,6 @@ module.exports = function (url, routes) {
     }
   }
 
-  return matchedRoute;
+  return result;
 
 };
