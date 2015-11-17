@@ -4,7 +4,8 @@
   "description": "Take a URL and map to functions, parsing params",
   "main": "index.js",
   "scripts": {
-    "test": "nodeunit tests"
+    "test": "nodeunit tests",
+    "coveralls": "istanbul cover nodeunit tests && cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
@@ -15,13 +16,17 @@
     "map",
     "parse"
   ],
-  "author": "Christian Alfoni",
+  "author": "Christian Alfoni <christianalfoni@gmail.com>",
+  "contributors": [
+    "Aleksey Guryanov <gurianov@gmail.com>"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/christianalfoni/url-mapper/issues"
   },
   "homepage": "https://github.com/christianalfoni/url-mapper#readme",
   "devDependencies": {
+    "coveralls": "^2.11.4",
     "istanbul": "^0.4.0",
     "nodeunit": "^0.9.1"
   },
