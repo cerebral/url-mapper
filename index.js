@@ -1,4 +1,5 @@
 'use strict';
+var mapper = require('./mapper');
 var URLON = require('URLON');
 var pathToRegexp = require('path-to-regexp');
 var omit = require('lodash/object/omit');
@@ -18,7 +19,7 @@ function compileRoute (cache, route, options) {
         var result = {};
 
         if (~path.indexOf('?')) {
-          result = URLON.parse(path.split(/\?(.+)/)[1]);
+          if (options.query) result = URLON.parse(path.split(/\?(.+)/)[1]);
           path = path.split('?')[0];
         }
 
@@ -41,11 +42,14 @@ function compileRoute (cache, route, options) {
           if (typeof values[key.name] != 'string') throw new Error('only strings for path');
         });
         var path = compiled(values);
-        var query = omit(values, keys.map(function(key){ return key.name }));
         var queryString = '';
 
-        if (Object.keys(query).length) {
-          queryString = '?' + URLON.stringify(query);
+        if (options.query) {
+          var query = omit(values, keys.map(function(key){ return key.name }));
+
+          if (Object.keys(query).length) {
+            queryString = '?' + URLON.stringify(query);
+          }
         }
 
         return path + queryString;
@@ -57,38 +61,5 @@ function compileRoute (cache, route, options) {
 }
 
 module.exports = function urlMapper (options) {
-  options = options || {};
-  var cache = {};
-  var compileFn = options.compileFn || compileRoute;
-  var compileOptions = omit(options, ['compileFn']);
-
-  function parse (route, url) {
-    return compileFn(cache, route, compileOptions).parse(url || '');
-  }
-
-  function stringify (route, values) {
-    return compileFn(cache, route, compileOptions).stringify(values || {});
-  }
-
-  function map(url, routes, callback) {
-    for (var route in routes) {
-      var compiled = compileFn(cache, route, compileOptions);
-      var values = compiled.parse(url);
-      if (values) {
-        var match = routes[route];
-
-        return {
-          route: route,
-          match: match,
-          values: values
-        };
-      }
-    }
-  }
-
-  return {
-    parse: parse,
-    stringify: stringify,
-    map: map
-  };
+  return mapper(options.compileFn || compileRoute, omit(options, 'compileFn'));
 };

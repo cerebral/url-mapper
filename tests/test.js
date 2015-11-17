@@ -1,4 +1,6 @@
-var urlMapper = require('../index')();
+var urlMapper = require('../index')({
+  query: true
+});
 var URLON = require('URLON');
 
 module.exports = {
