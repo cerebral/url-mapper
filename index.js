@@ -18,8 +18,15 @@ function compileRoute (route, options, cache) {
         var path = url;
         var result = {};
 
+        if (~path.indexOf('#')) {
+          path = path.split('#')[0];
+        }
+
         if (~path.indexOf('?')) {
-          if (options.query) result = URLON.parse(path.split(/\?(.+)/)[1]);
+          if (options.query) {
+            var queryString = '_' + path.split(/\?(.+)/)[1];
+            result = URLON.parse(queryString);
+          }
           path = path.split('?')[0];
         }
 
@@ -28,8 +35,10 @@ function compileRoute (route, options, cache) {
 
         for (var i = 1; i < match.length; ++i) {
           var key = keys[i - 1];
-          var value = match[i];
-          if (value !== undefined || !(hasOwnProperty.call(result, key.name))) {
+          var value = decodeURIComponent(match[i]);
+          if (value[0] === ':') {
+            result[key.name] = URLON.parse(value);
+          } else {
             result[key.name] = value;
           }
         }
@@ -38,17 +47,27 @@ function compileRoute (route, options, cache) {
       },
 
       stringify: function (values) {
+        var params = Object.create(values);
+
         keys.forEach(function(key) {
-          if (typeof values[key.name] != 'string') throw new Error('only strings for path');
+          switch (typeof params[key.name]) {
+            case 'boolean':
+            case 'number':
+              params[key.name] = URLON.stringify(params[key.name]);
+              break;
+
+            case 'object':
+              throw new Error('URL Mapper - objects are not allowed to be stringified as part of path');
+          }
         });
-        var path = compiled(values);
+        var path = compiled(params);
         var queryString = '';
 
         if (options.query) {
-          var query = omit(values, keys.map(function(key){ return key.name }));
+          var query = omit(params, keys.map(function(key){ return key.name }));
 
           if (Object.keys(query).length) {
-            queryString = '?' + URLON.stringify(query);
+            queryString = '?' + URLON.stringify(query).slice(1);
           }
         }
 
@@ -61,5 +80,5 @@ function compileRoute (route, options, cache) {
 }
 
 module.exports = function urlMapper (options) {
-  return mapper(options.compileFn || compileRoute, omit(options, 'compileFn'));
+  return mapper(compileRoute, options);
 };
