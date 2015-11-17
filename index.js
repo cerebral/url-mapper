@@ -4,7 +4,7 @@ var URLON = require('URLON');
 var pathToRegexp = require('path-to-regexp');
 var omit = require('lodash/object/omit');
 
-function compileRoute (cache, route, options) {
+function compileRoute (route, options, cache) {
   var re;
   var compiled;
   var keys = [];
