@@ -1,6 +1,6 @@
 {
   "name": "url-mapper",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Take a URL and map to functions, parsing params",
   "main": "index.js",
   "scripts": {
@@ -22,10 +22,12 @@
   },
   "homepage": "https://github.com/christianalfoni/url-mapper#readme",
   "devDependencies": {
+    "istanbul": "^0.4.0",
     "nodeunit": "^0.9.1"
   },
   "dependencies": {
-    "path-to-regexp": "^1.2.1",
-    "qs": "^5.2.0"
+    "URLON": "vjeux/URLON",
+    "lodash": "^3.10.1",
+    "path-to-regexp": "^1.2.1"
   }
 }

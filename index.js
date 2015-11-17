@@ -1,71 +1,92 @@
 'use strict';
-var qs = require('qs');
-var pathtoRegexp = require('path-to-regexp');
-var cache = {};
+var URLON = require('URLON');
+var pathToRegexp = require('path-to-regexp');
+var omit = require('lodash/object/omit');
 
-function isMatch(re, path, keys) {
-  var match = re.exec(decodeURIComponent(path));
-  if (!match) { return null; }
+module.exports = function urlMapper (options) {
+  var cache = {};
+  options = options || {};
 
-  var params = {};
+  function compileRoute (route) {
+    var re;
+    var compiled;
+    var keys = [];
 
-  for (var i = 1; i < match.length; ++i) {
-    var key = keys[i - 1];
-    var value = decodeURIComponent(match[i].replace(/\+/g, ' '));
-    if (value !== undefined || !(hasOwnProperty.call(params, key.name))) {
-      params[key.name] = value;
-    }
-  }
-
-  return params;
-}
-
-module.exports = function (url, routes) {
-
-  var path = url;
-
-  var params = {};
-  var route = {};
-  var hash = null;
-  var queryString = null;
-  var matchedRoute;
-
-  if (~path.indexOf('#')) {
-    hash = path.split(/#(.+)/)[1];
-    path = path.split('#')[0];
-  }
-
-  if (~path.indexOf('?')) {
-    queryString = path.split(/\?(.+)/)[1];
-    path = path.split('?')[0];
-  }
-
-  for (route in routes) {
     if (!cache[route]) {
-      var keys = [];
-      var re = pathtoRegexp(route, keys)
+      re = pathToRegexp(route, keys);
+      compiled = pathToRegexp.compile(route);
+
       cache[route] = {
-        keys: keys,
-        re: re
+        parse: function (url) {
+          var path = url;
+          var result = {};
+
+          if (~path.indexOf('?')) {
+            result = URLON.parse(path.split(/\?(.+)/)[1]);
+            path = path.split('?')[0];
+          }
+
+          var match = re.exec(path);
+          if (!match) return null;
+
+          for (var i = 1; i < match.length; ++i) {
+            var key = keys[i - 1];
+            var value = match[i];
+            if (value !== undefined || !(hasOwnProperty.call(result, key.name))) {
+              result[key.name] = value;
+            }
+          }
+
+          return result;
+        },
+
+        stringify: function (values) {
+          keys.forEach(function(key) {
+            if (typeof values[key.name] != 'string') throw new Error('only strings for path');
+          });
+          var path = compiled(values);
+          var query = omit(values, keys.map(function(key){ return key.name }));
+          var queryString = '';
+
+          if (Object.keys(query).length) {
+            queryString = '?' + URLON.stringify(query);
+          }
+
+          return path + queryString;
+        }
+      };
+    }
+
+    return cache[route];
+  }
+
+  function map(url, routes, callback) {
+    for (var route in routes) {
+      var compiled = compileRoute(route);
+      var values = compiled.parse(url);
+      if (values) {
+        var match = routes[route];
+
+        return {
+          route: route,
+          match: match,
+          values: values
+        };
       }
     }
-    params = isMatch(cache[route].re, path, cache[route].keys);
-    if (params) {
-      var query = queryString ? qs.parse(queryString) : {};
-
-      routes[route]({
-        url: url,
-        path: path,
-        hash: hash || '',
-        params: params,
-        query: query
-      });
-
-      matchedRoute = route;
-      break;
-    }
   }
 
-  return matchedRoute;
+  function parse (route, url) {
+    return compileRoute(route).parse(url || '');
+  }
 
+  function stringify (route, values) {
+    return compileRoute(route).stringify(values || {});
+  }
+
+  return {
+    parse: parse,
+    stringify: stringify,
+    map: map
+  };
 };
