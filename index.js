@@ -2,7 +2,6 @@
 var mapper = require('./mapper');
 var URLON = require('URLON');
 var pathToRegexp = require('path-to-regexp');
-var omit = require('lodash/object/omit');
 
 function compileRoute (route, options, cache) {
   var re;
@@ -11,6 +10,7 @@ function compileRoute (route, options, cache) {
 
   if (!cache[route]) {
     re = pathToRegexp(route, keys);
+    keys = keys.map(function(key){ return key.name.toString() });
     compiled = pathToRegexp.compile(route);
 
     cache[route] = {
@@ -37,9 +37,9 @@ function compileRoute (route, options, cache) {
           var key = keys[i - 1];
           var value = decodeURIComponent(match[i]);
           if (value[0] === ':') {
-            result[key.name] = URLON.parse(value);
+            result[key] = URLON.parse(value);
           } else {
-            result[key.name] = value;
+            result[key] = value;
           }
         }
 
@@ -47,27 +47,34 @@ function compileRoute (route, options, cache) {
       },
 
       stringify: function (values) {
-        var params = Object.create(values);
+        var pathParams = {};
+        var queryParams = {}
 
-        keys.forEach(function(key) {
-          switch (typeof params[key.name]) {
-            case 'boolean':
-            case 'number':
-              params[key.name] = URLON.stringify(params[key.name]);
-              break;
+        Object.keys(values).forEach(function(key) {
+          if (~keys.indexOf(key)) {
+            switch (typeof values[key]) {
+              case 'boolean':
+              case 'number':
+                pathParams[key] = URLON.stringify(values[key]);
+                break;
 
-            case 'object':
-              throw new Error('URL Mapper - objects are not allowed to be stringified as part of path');
+              case 'object':
+                throw new Error('URL Mapper - objects are not allowed to be stringified as part of path');
+
+              default:
+                pathParams[key] = values[key];
+            }
+          } else {
+            queryParams[key] = values[key];
           }
         });
-        var path = compiled(params);
+
+        var path = compiled(pathParams);
         var queryString = '';
 
         if (options.query) {
-          var query = omit(params, keys.map(function(key){ return key.name }));
-
-          if (Object.keys(query).length) {
-            queryString = '?' + URLON.stringify(query).slice(1);
+          if (Object.keys(queryParams).length) {
+            queryString = '?' + URLON.stringify(queryParams).slice(1);
           }
         }
 
