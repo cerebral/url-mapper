@@ -57,30 +57,14 @@ module.exports['mapper'] = {
   },
 
   parse: {
-    'should pass right arguments to compileFn and its parse method': function (test) {
+    'should pass route and options arguments to compileFn and its parse method': function (test) {
       var options = {};
       var mapper = Mapper(this.compileFn, options);
 
       mapper.parse('route', 'url');
       test.equals(this.compileFnArgs[0], 'route');
       test.equals(this.compileFnArgs[1], options);
-      test.deepEqual(this.compileFnArgs[2], {});
       test.equals(this.parseArgs[0], 'url');
-
-      test.done();
-    },
-
-    'should reuse cache between calls': function (test) {
-      var mapper = Mapper(this.compileFn);
-
-      mapper.parse('route', 'url');
-      var cache = this.compileFnArgs[2];
-      delete this.compileFnArgs;
-
-      mapper.parse('route2', 'url2');
-      test.equals(this.compileFnArgs[0], 'route2');
-      test.equals(this.compileFnArgs[2], cache);
-      test.equals(this.parseArgs[0], 'url2');
 
       test.done();
     },
@@ -101,7 +85,7 @@ module.exports['mapper'] = {
   },
 
   stringify: {
-    'should pass right arguments to compileFn and its stringify method': function (test) {
+    'should pass route and options arguments to compileFn and its stringify method': function (test) {
       var options = {};
       var object = {};
       var mapper = Mapper(this.compileFn, options);
@@ -109,25 +93,7 @@ module.exports['mapper'] = {
       mapper.stringify('route', object);
       test.equals(this.compileFnArgs[0], 'route');
       test.equals(this.compileFnArgs[1], options);
-      test.deepEqual(this.compileFnArgs[2], {});
       test.equals(this.stringifyArgs[0], object);
-
-      test.done();
-    },
-
-    'should reuse cache between calls': function (test) {
-      var object = {};
-      var object2 = {};
-      var mapper = Mapper(this.compileFn);
-
-      mapper.stringify('route', object);
-      var cache = this.compileFnArgs[2];
-      delete this.compileFnArgs;
-
-      mapper.stringify('route2', object2);
-      test.equals(this.compileFnArgs[0], 'route2');
-      test.equals(this.compileFnArgs[2], cache);
-      test.equals(this.stringifyArgs[0], object2);
 
       test.done();
     },
@@ -148,7 +114,7 @@ module.exports['mapper'] = {
   },
 
   map: {
-    'should pass right arguments to compileFn': function (test) {
+    'should pass route and options arguments to compileFn': function (test) {
       var options = {};
       var routes = {
         ':url': {}
@@ -158,25 +124,6 @@ module.exports['mapper'] = {
       mapper.map('url', routes);
       test.equals(this.compileFnArgs[0], ':url');
       test.equals(this.compileFnArgs[1], options);
-      test.deepEqual(this.compileFnArgs[2], {});
-
-      test.done();
-    },
-
-    'should reuse cache between calls': function (test) {
-      var options = {};
-      var routes = {
-        ':url': {},
-        ':url2': {}
-      };
-      var mapper = Mapper(this.compileFn, options);
-
-      mapper.map('url', routes);
-      var cache = this.compileFnArgs[2];
-      delete this.compileFnArgs;
-
-      mapper.map('url2', routes);
-      test.deepEqual(this.compileFnArgs[2], cache);
 
       test.done();
     },
