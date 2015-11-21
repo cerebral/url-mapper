@@ -1,28 +1,204 @@
 # url-mapper
-Take a URL and map to functions, parsing params
+Two way `URL` <==> `route(params)` converter with mapper.
+
+[![NPM version][npm-image]][npm-url]
+[![Build status][travis-image]][travis-url]
+[![Test coverage][coveralls-image]][coveralls-url]
+
+## Instalation
+
+`npm install url-mapper --save`
+
+## Usage
+
+### Overview
+
+The main purpose of `url-mapper` is to match given `URL` to one of the `routes`.
+It will return the matched route (key and associated value) and parsed parameters.
+You can associate anything you want with route: function, React component or just plain object.
+
+`url-mapper` is helpful when creating router packages for frameworks or can be used as router itself.
+It allows you to outsource working with a url (mapping, parsing, stringifying) and concentrate on wiring up things related to your favorite framework.
+
+### Example
 
 ```js
-import route from 'url-mapper';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Mapper from 'url-mapper';
+import { CoreApp, ComponentA, ComponentB, Component404 } from './components';
 
-const someFunc = function (data) {
-  data // {url: '/foo/123?foo=bar', path: '/foo', params: {id: '123'}, query: {foo: 'bar'}}
-};
+const urlMapper = Mapper();
 
-const notFoundFunc = function (data) { };
-
-route(location.origin + '/foo/123', {
-  '/foo/:id': someFunc,
-  '*': notFoundFunc
+var matchedRoute = urlMapper('/bar/baz/:42', { // routable part of url
+  '/foo/:id': ComponentA,
+  '/bar/:list/:itemId': ComponentB,
+  '*': Component404
 });
-```
-**url-mapper** passes an object representing the parsed URL to your route callbacks. Given the URL `http://www.bigapp.com/foo/123?bar=baz` and a matching route `/foo/:id`, your callbacks will receive:
-```js
-{
-  url: '/foo/123?bar=baz',
-  path: '/foo/123',
-  params: {id: 123},
-  query: {bar: 'baz'}
+
+if (matchedRoute) {
+  const Component = matchedRoute.match; // ComponentB
+  const props = matchedRoute.values; // { list: 'baz', itemId: 42 }
+
+  ReactDOM.render(
+    <CoreApp>
+      <Component {...props} />
+    </CoreApp>
+  );
 }
 ```
 
-This library just allows you to map a url to a function. It allows dynamic segments and you can pass a full url or just the path. It's designed to be used with other libraries to manage URLs in your applications.
+See [`cerebral-router`](https://github.com/christianalfoni/cerebral-router) as an example of building your own router solution on top of `url-mapper`.
+
+## API
+
+### Main module
+
+At top level the `url-mapper` module exports a factory which returns default implementation of an `URL` <==> `route(params)` converter.
+
+#### Factory
+##### Usage
+
+```js
+var urlMapper = require('url-mapper');
+var mapper = urlMapper(options);
+```
+
+##### Arguments
+
+<table>
+  <tr>
+    <th>Param</th><th>Type</th><th>Details</th>
+  </tr>
+  <tr>
+    <td>options</th><td><code>Object</code></td>
+    <td>Options passed to converter.
+      <table>
+        <tr>
+          <th>Property</th><th>Type</th><th>Details</th>
+        </tr>
+        <tr>
+          <td>query</td><td><code>Boolean</code></td>
+          <td>Enables converting values not defined in route as query in URL Object Notation</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+##### Returns
+
+`Object` - Object with `parse`, `stringify` and `map` methods.
+
+Returned methods deals with Express-style route definitions and cleaned routable part of url (without origin, base path, leading hash symbol).
+
+Params defined in route are mapped to the same named properties in the `values` Object with help of `path-to-regexp` module.
+It is safe to pass Numbers and Booleans as well as Strings as path parameteres.
+The original type would be preserved while parsing back stringified one.
+
+By default, the query part is ignored.
+Query part params are mapped to the same named properties in `values` Object if `{ query: true }` option was passed to factory.
+Conversion of the query part is made with help of `URLON` module. Therefore, it can accept any JSON serializable value.
+
+Hash part is ignored at all if any present.
+You still can manage your routes in `location.hash` but don't provide `#` symbol before routable part.
+
+#### `parse` method
+
+##### Usage
+
+`mapper.parse(route, url)`;
+
+##### Arguments
+
+Param | Type     | Details
+------|----------|--------
+route | `String` | Express style route definition
+url   | `String` | Routable part of url
+
+##### Returns
+
+`Object` - values parsed from `url` with given `route`.
+
+Path parsed using `path-to-regexp` module, tweaked to support `Boolean` and `Number`.
+Query part parsed with `URLON` module if { query: true } option was passed to factory.
+
+#### `stringify` method
+
+##### Usage
+
+`mapper.stringify(route, values)`;
+
+##### Arguments
+
+Param  | Type     | Details
+-------|----------|--------
+route  | `String` | Express style route definition
+values | `Object` | Object used to populate parameters in route definition
+
+##### Returns
+
+`String` - values stringified to `url` with given `route`.
+
+Properties defined in route are stringified to path part using `path-to-regexp` module, tweaked to support `Boolean` and `Number`.
+Properties not defined in route are stringified to query part using `URLON` module if { query: true } option was passed to factory.
+
+#### `map` method
+
+##### Usage
+
+`mapper.map(url, routes)`;
+
+##### Arguments
+
+Param  | Type     | Details
+-------|----------|--------
+url    | `String` | Routable part of url
+routes | `Object` | Routes to map url with
+
+##### Returns
+
+`Object` - Object representing matched route with properties:
+
+Property  | Type     | Details
+----------|----------|--------
+route     | `String` | Matched `route` defined as key in `routes`
+match     | `Any`    | Value from `routes` associated with matched `route`
+values    | `Object` | Values parsed from given `url` with matched `route`
+
+### Matcher
+
+Custom converting algoritms could be implemented by providing a custom compile function.
+If you don't like default route definition format or converting algorithms, feel free to make your own.
+
+#### Factory
+##### Usage
+
+```js
+var urlMapper = require('url-mapper/mapper');
+var mapper = urlMapper(compileFn, options);
+```
+
+##### Arguments
+
+Param     | Type       | Details
+----------|------------|--------
+compileFn | `Function` | Function used by mapper to "compile" a route.
+options   | `Any`      | `Optional`. Passed to `compileFn` as second argument.
+
+For each route mapper would call `compileFn(route, options)` and cache result internally.
+`compileFn` should return `parse(url)` and `stringify(values)` methods for any given route.
+See [default implementation](/index.js#L6) for reference.
+
+##### Returns
+
+`Object` - Object with `parse(route, url)`, `stringify(route, values)` and `map(url, routes)` methods.
+
+These methods will use cached methods returned by `compileFn` for given routes.
+
+[npm-image]: https://img.shields.io/npm/v/url-mapper.svg?style=flat
+[npm-url]: https://npmjs.org/package/url-mapper
+[travis-image]: https://img.shields.io/travis/christianalfoni/url-mapper.svg?style=flat
+[travis-url]: https://travis-ci.org/christianalfoni/url-mapper
+[coveralls-image]: https://img.shields.io/coveralls/christianalfoni/url-mapper.svg?style=flat
+[coveralls-url]: https://coveralls.io/r/christianalfoni/url-mapper?branch=master
