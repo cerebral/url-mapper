@@ -1,6 +1,6 @@
 'use strict';
 var mapper = require('./mapper');
-var URLON = require('URLON');
+var URLON = require('urlon');
 var pathToRegexp = require('path-to-regexp');
 
 function compileRoute (route, options) {
