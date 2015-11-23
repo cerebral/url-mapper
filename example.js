@@ -19,5 +19,5 @@ console.log(parsed);
 var mapped = urlMapper.map(url, {
   '/:foo': 'one',
   '/:foo/bar': 'two'
-})
+});
 console.log(mapped);

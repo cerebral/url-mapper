@@ -50,6 +50,7 @@ if (matchedRoute) {
 ```
 
 See [`cerebral-router`](https://github.com/christianalfoni/cerebral-router) as an example of building your own router solution on top of `url-mapper`.
+Also see [example at Tonic Sandbox](https://tonicdev.com/npm/url-mapper) to try it right in your browser.
 
 ## API
 

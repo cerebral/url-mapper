@@ -1,6 +1,6 @@
 {
   "name": "url-mapper",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Two way `URL` <==> `route(params)` converter with mapper",
   "main": "index.js",
   "scripts": {
