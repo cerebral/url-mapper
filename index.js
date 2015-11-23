@@ -9,7 +9,7 @@ function compileRoute (route, options) {
   var keys = [];
 
   re = pathToRegexp(route, keys);
-  keys = keys.map(function(key){ return key.name.toString() });
+  keys = keys.map(function(key){ return key.name.toString(); });
   compiled = pathToRegexp.compile(route);
 
   return {

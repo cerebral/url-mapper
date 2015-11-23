@@ -4,6 +4,7 @@ Two way `URL` <==> `route(params)` converter with mapper.
 [![NPM version][npm-image]][npm-url]
 [![Build status][travis-image]][travis-url]
 [![Test coverage][coveralls-image]][coveralls-url]
+[![bitHound Score][bithound-image]][bithound-url]
 
 ## Instalation
 
@@ -202,3 +203,5 @@ These methods will use cached methods returned by `compileFn` for given routes.
 [travis-url]: https://travis-ci.org/christianalfoni/url-mapper
 [coveralls-image]: https://img.shields.io/coveralls/christianalfoni/url-mapper.svg?style=flat
 [coveralls-url]: https://coveralls.io/r/christianalfoni/url-mapper?branch=master
+[bithound-image]: https://www.bithound.io/github/christianalfoni/url-mapper/badges/score.svg
+[bithound-url]: https://www.bithound.io/github/christianalfoni/url-mapper

@@ -9,7 +9,7 @@ module.exports = function mapper (compileFn, options) {
       cache[route] = compileFn(route, options);
     }
 
-    return cache[route]
+    return cache[route];
   }
 
   function parse (route, url) {
