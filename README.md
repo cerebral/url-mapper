@@ -49,7 +49,7 @@ if (matchedRoute) {
 }
 ```
 
-See [`cerebral-router`](https://github.com/christianalfoni/cerebral-router) as an example of building your own router solution on top of `url-mapper`.
+See [`cerebral-router`](https://github.com/cerebral/cerebral-router) as an example of building your own router solution on top of `url-mapper`.
 Also see [example at Tonic Sandbox](https://tonicdev.com/npm/url-mapper) to try it right in your browser.
 
 ## API
@@ -200,9 +200,9 @@ These methods will use cached methods returned by `compileFn` for given routes.
 
 [npm-image]: https://img.shields.io/npm/v/url-mapper.svg?style=flat
 [npm-url]: https://npmjs.org/package/url-mapper
-[travis-image]: https://img.shields.io/travis/christianalfoni/url-mapper.svg?style=flat
-[travis-url]: https://travis-ci.org/christianalfoni/url-mapper
-[coveralls-image]: https://img.shields.io/coveralls/christianalfoni/url-mapper.svg?style=flat
-[coveralls-url]: https://coveralls.io/r/christianalfoni/url-mapper?branch=master
-[bithound-image]: https://www.bithound.io/github/christianalfoni/url-mapper/badges/score.svg
-[bithound-url]: https://www.bithound.io/github/christianalfoni/url-mapper
+[travis-image]: https://img.shields.io/travis/cerebral/url-mapper.svg?style=flat
+[travis-url]: https://travis-ci.org/cerebral/url-mapper
+[coveralls-image]: https://img.shields.io/coveralls/cerebral/url-mapper.svg?style=flat
+[coveralls-url]: https://coveralls.io/r/cerebral/url-mapper?branch=master
+[bithound-image]: https://www.bithound.io/github/cerebral/url-mapper/badges/score.svg
+[bithound-url]: https://www.bithound.io/github/cerebral/url-mapper

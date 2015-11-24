@@ -1,6 +1,6 @@
 {
   "name": "url-mapper",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Two way `URL` <==> `route(params)` converter with mapper",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/christianalfoni/url-mapper.git"
+    "url": "git+https://github.com/cerebral/url-mapper.git"
   },
   "keywords": [
     "url",
@@ -22,9 +22,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/christianalfoni/url-mapper/issues"
+    "url": "https://github.com/cerebral/url-mapper/issues"
   },
-  "homepage": "https://github.com/christianalfoni/url-mapper#readme",
+  "homepage": "https://github.com/cerebral/url-mapper#readme",
   "tonicExampleFilename": "example.js",
   "devDependencies": {
     "coveralls": "^2.11.4",
