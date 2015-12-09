@@ -6,7 +6,7 @@ Two way `URL` <==> `route(params)` converter with mapper.
 [![Test coverage][coveralls-image]][coveralls-url]
 [![bitHound Score][bithound-image]][bithound-url]
 
-## Instalation
+## Installation
 
 `npm install url-mapper --save`
 
