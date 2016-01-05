@@ -31,7 +31,7 @@ import { CoreApp, ComponentA, ComponentB, Component404 } from './components';
 
 const urlMapper = Mapper();
 
-var matchedRoute = urlMapper('/bar/baz/:42', { // routable part of url
+var matchedRoute = urlMapper.map('/bar/baz/:42', { // routable part of url
   '/foo/:id': ComponentA,
   '/bar/:list/:itemId': ComponentB,
   '*': Component404
