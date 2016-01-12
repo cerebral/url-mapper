@@ -1,16 +1,16 @@
 {
   "name": "url-mapper",
-  "version": "0.5.3",
   "description": "Two way `URL` <==> `route(params)` converter with mapper",
   "main": "index.js",
   "scripts": {
     "test": "nodeunit tests",
     "coverage": "istanbul cover nodeunit tests",
-    "postcoverage": "cat ./coverage/lcov.info | coveralls"
+    "postcoverage": "cat ./coverage/lcov.info | coveralls",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cerebral/url-mapper.git"
+    "url": "https://github.com/cerebral/url-mapper.git"
   },
   "keywords": [
     "url",
@@ -34,7 +34,8 @@
     "ghooks": "^1.0.3",
     "istanbul": "^0.4.0",
     "nodeunit": "^0.9.1",
-    "validate-commit-msg": "^1.0.0"
+    "validate-commit-msg": "^1.0.0",
+    "semantic-release": "^4.3.5"
   },
   "dependencies": {
     "urlon": "^2.0.0",
