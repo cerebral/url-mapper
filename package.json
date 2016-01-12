@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "nodeunit tests",
-    "coveralls": "istanbul cover nodeunit tests && cat ./coverage/lcov.info | coveralls"
+    "coverage": "istanbul cover nodeunit tests",
+    "postcoverage": "cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
@@ -27,12 +28,24 @@
   "homepage": "https://github.com/cerebral/url-mapper#readme",
   "tonicExampleFilename": "example.js",
   "devDependencies": {
+    "commitizen": "^2.5.0",
     "coveralls": "^2.11.4",
+    "cz-customizable": "^2.7.0",
+    "ghooks": "^1.0.3",
     "istanbul": "^0.4.0",
-    "nodeunit": "^0.9.1"
+    "nodeunit": "^0.9.1",
+    "validate-commit-msg": "^1.0.0"
   },
   "dependencies": {
     "urlon": "^2.0.0",
     "path-to-regexp": "^1.2.1"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-customizable"
+    },
+    "ghooks": {
+      "commit-msg": "validate-commit-msg"
+    }
   }
 }
