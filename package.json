@@ -3,6 +3,7 @@
   "description": "Two way `URL` <==> `route(params)` converter with mapper",
   "main": "index.js",
   "scripts": {
+    "pretest": "standard",
     "test": "nodeunit tests",
     "coverage": "istanbul cover nodeunit tests",
     "postcoverage": "cat ./coverage/lcov.info | coveralls",
@@ -34,8 +35,9 @@
     "ghooks": "^1.0.3",
     "istanbul": "^0.4.0",
     "nodeunit": "^0.9.1",
-    "validate-commit-msg": "^1.0.0",
-    "semantic-release": "^4.3.5"
+    "semantic-release": "^4.3.5",
+    "standard": "^5.4.1",
+    "validate-commit-msg": "^1.0.0"
   },
   "dependencies": {
     "urlon": "^2.0.0",
