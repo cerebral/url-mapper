@@ -7,6 +7,7 @@ function compileRoute (route, options) {
   var re
   var compiled
   var keys = []
+  var querySeparator = options.querySeparator || '?'
 
   re = pathToRegexp(route, keys)
   keys = keys.map(function (key) { return key.name.toString() })
@@ -17,16 +18,16 @@ function compileRoute (route, options) {
       var path = url
       var result = {}
 
-      if (~path.indexOf('#')) {
+      if (~path.indexOf('#') && !~querySeparator.indexOf('#')) {
         path = path.split('#')[0]
       }
 
-      if (~path.indexOf('?')) {
+      if (~path.indexOf(querySeparator)) {
         if (options.query) {
-          var queryString = '_' + path.split(/\?(.+)/)[1]
+          var queryString = '_' + path.slice(path.indexOf(querySeparator) + querySeparator.length)
           result = URLON.parse(queryString)
         }
-        path = path.split('?')[0]
+        path = path.split(querySeparator)[0]
       }
 
       var match = re.exec(path)
@@ -73,7 +74,7 @@ function compileRoute (route, options) {
 
       if (options.query) {
         if (Object.keys(queryParams).length) {
-          queryString = '?' + URLON.stringify(queryParams).slice(1)
+          queryString = querySeparator + URLON.stringify(queryParams).slice(1)
         }
       }
 

@@ -369,6 +369,26 @@ module.exports = {
         test.deepEqual(mapper.parse('/:foo', mapper.stringify('/:foo', object)), object)
 
         test.done()
+      },
+
+      'should allow custom query separator': function (test) {
+        var mapper = urlMapper({ query: true, querySeparator: '#' })
+        test.equal(mapper.stringify('/:foo', { foo: 'bar', bar: 'baz' }), '/bar#bar=baz')
+        test.deepEqual(mapper.parse('/:foo', '/bar#bar=baz'), { foo: 'bar', bar: 'baz' })
+
+        mapper = urlMapper({ query: true, querySeparator: '@' })
+        test.equal(mapper.stringify('/:foo', { foo: 'bar', bar: 'baz' }), '/bar@bar=baz')
+        test.deepEqual(mapper.parse('/:foo', '/bar@bar=baz'), { foo: 'bar', bar: 'baz' })
+
+        mapper = urlMapper({ query: true, querySeparator: '@@' })
+        test.equal(mapper.stringify('/:foo', { foo: 'bar', bar: 'baz' }), '/bar@@bar=baz')
+        test.deepEqual(mapper.parse('/:foo', '/bar@@bar=baz'), { foo: 'bar', bar: 'baz' })
+
+        mapper = urlMapper({ query: true, querySeparator: '#@' })
+        test.equal(mapper.stringify('/:foo', { foo: 'bar', bar: 'baz' }), '/bar#@bar=baz')
+        test.deepEqual(mapper.parse('/:foo', '/bar#@bar=baz'), { foo: 'bar', bar: 'baz' })
+
+        test.done()
       }
     }
   }

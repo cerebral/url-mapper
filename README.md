@@ -86,6 +86,10 @@ var mapper = urlMapper(options);
           <td>query</td><td><code>Boolean</code></td>
           <td>Enables converting values not defined in route as query in URL Object Notation</td>
         </tr>
+        <tr>
+          <td>querySeparator</td><td><code>String</code></td>
+          <td>String used to separate query from routable part. Default <code>'?'</code>.</td>
+        </tr>
       </table>
     </td>
   </tr>
