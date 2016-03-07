@@ -339,6 +339,17 @@ module.exports = {
         test.done()
       },
 
+      'should not stringify undefined query params': function (test) {
+        var mapper = urlMapper({ query: true })
+
+        test.equal(mapper.stringify('/:foo', {
+          foo: 'bar',
+          bar: undefined
+        }), '/bar')
+
+        test.done()
+      },
+
       'should parse stringified object including params not defined in route': function (test) {
         var mapper = urlMapper({ query: true })
         var object = {

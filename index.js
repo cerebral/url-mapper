@@ -64,7 +64,7 @@ function compileRoute (route, options) {
               pathParams[key] = values[key]
           }
         } else {
-          queryParams[key] = values[key]
+          if (typeof values[key] !== 'undefined') queryParams[key] = values[key]
         }
       })
 
