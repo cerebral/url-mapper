@@ -197,7 +197,7 @@ options   | `Any`      | `Optional`. Passed to `compileFn` as second argument.
 
 For each route mapper would call `compileFn(route, options)` and cache result internally.
 `compileFn` should return `parse(url)` and `stringify(values)` methods for any given route.
-See [default implementation](/index.js#L6) for reference.
+See [default implementation](/compileRoute.js) for reference.
 
 ##### Returns
 
