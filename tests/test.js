@@ -389,6 +389,17 @@ module.exports = {
         test.deepEqual(mapper.parse('/:foo', '/bar#@bar=baz'), { foo: 'bar', bar: 'baz' })
 
         test.done()
+      },
+
+      'should parse optional paramters as undefined': function (test) {
+        var mapper = urlMapper()
+
+        test.deepEqual(mapper.parse('/:foo/:bar?', '/bar/'), {
+          foo: 'bar',
+          bar: undefined
+        })
+
+        test.done()
       }
     }
   }

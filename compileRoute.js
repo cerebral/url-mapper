@@ -34,8 +34,8 @@ function compileRoute (route, options) {
 
       for (var i = 1; i < match.length; ++i) {
         var key = keys[i - 1]
-        var value = decodeURIComponent(match[i])
-        if (value[0] === ':') {
+        var value = match[i] && decodeURIComponent(match[i])
+        if (value && value[0] === ':') {
           result[key] = URLON.parse(value)
         } else {
           result[key] = value
