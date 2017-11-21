@@ -253,13 +253,28 @@ module.exports = {
         var object = {
           foo: true,
           bar: false,
-          baz: 42
+          baz: 42,
+          qux: null
         }
         // URLON-like notation
-        var url = '/%3Atrue/%3Afalse/%3A42'
+        var url = '/:true/:false/:42/:null'
 
-        test.equal(mapper.stringify('/:foo/:bar/:baz', object), url)
-        test.deepEqual(mapper.parse('/:foo/:bar/:baz', url), object)
+        test.equal(mapper.stringify('/:foo/:bar/:baz/:qux', object), url)
+        test.deepEqual(mapper.parse('/:foo/:bar/:baz/:qux', url), object)
+
+        test.done()
+      },
+
+      'should properly escape unsafe symbols in segments': function (test) {
+        var mapper = urlMapper()
+        var object = {
+          foo: 'foo/?#\'"bar'
+        }
+        // URLON-like notation
+        var url = '/foo%2F%3F%23%27%22bar'
+
+        test.equal(mapper.stringify('/:foo', object), url)
+        test.deepEqual(mapper.parse('/:foo', url), object)
 
         test.done()
       },

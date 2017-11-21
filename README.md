@@ -27,33 +27,33 @@ It allows you to outsource working with a url (mapping, parsing, stringifying) a
 ### Example
 
 ```js
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Mapper from 'url-mapper';
-import { CoreApp, ComponentA, ComponentB, Component404 } from './components';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import Mapper from 'url-mapper'
+import { CoreApp, ComponentA, ComponentB, Component404 } from './components'
 
-const urlMapper = Mapper();
+const urlMapper = Mapper()
 
 var matchedRoute = urlMapper.map('/bar/baz/:42', { // routable part of url
   '/foo/:id': ComponentA,
   '/bar/:list/:itemId': ComponentB,
   '*': Component404
-});
+})
 
 if (matchedRoute) {
-  const Component = matchedRoute.match; // ComponentB
-  const props = matchedRoute.values; // { list: 'baz', itemId: 42 }
+  const Component = matchedRoute.match // ComponentB
+  const props = matchedRoute.values // { list: 'baz', itemId: 42 }
 
   ReactDOM.render(
     <CoreApp>
       <Component {...props} />
     </CoreApp>
-  );
+  )
 }
 ```
 
-See [`cerebral-router`](https://github.com/cerebral/cerebral-router) as an example of building your own router solution on top of `url-mapper`.
-Also see [example at Tonic Sandbox](https://tonicdev.com/npm/url-mapper) to try it right in your browser.
+See [`@cerebral/router`](https://github.com/cerebral/cerebral/blob/next/packages/node_modules/%40cerebral/router) as an example of building your own router solution on top of `url-mapper`.
+Also see [example at Runkit Sandbox](https://npm.runkit.com/url-mapper) to try it right in your browser.
 
 ## API
 
@@ -65,8 +65,8 @@ At top level the `url-mapper` module exports a factory which returns default imp
 ##### Usage
 
 ```js
-var urlMapper = require('url-mapper');
-var mapper = urlMapper(options);
+var urlMapper = require('url-mapper')
+var mapper = urlMapper(options)
 ```
 
 ##### Arguments
@@ -116,7 +116,7 @@ You still can manage your routes in `location.hash` but don't provide `#` symbol
 
 ##### Usage
 
-`mapper.parse(route, url)`;
+`mapper.parse(route, url)`
 
 ##### Arguments
 
@@ -136,7 +136,7 @@ Query part parsed with `URLON` module if { query: true } option was passed to fa
 
 ##### Usage
 
-`mapper.stringify(route, values)`;
+`mapper.stringify(route, values)`
 
 ##### Arguments
 
@@ -156,7 +156,7 @@ Properties not defined in route are stringified to query part using `URLON` modu
 
 ##### Usage
 
-`mapper.map(url, routes)`;
+`mapper.map(url, routes)`
 
 ##### Arguments
 
@@ -184,8 +184,8 @@ If you don't like default route definition format or converting algorithms, feel
 ##### Usage
 
 ```js
-var urlMapper = require('url-mapper/mapper');
-var mapper = urlMapper(compileFn, options);
+var urlMapper = require('url-mapper/mapper')
+var mapper = urlMapper(compileFn, options)
 ```
 
 ##### Arguments

@@ -2,6 +2,18 @@
 var URLON = require('urlon')
 var pathToRegexp = require('path-to-regexp')
 
+function getKeyName (key) {
+  return key.name.toString()
+}
+
+// loose escaping for segment part
+// see: https://github.com/pillarjs/path-to-regexp/pull/75
+function encodeSegment (str) {
+  return encodeURI(str).replace(/[/?#'"]/g, function (c) {
+    return '%' + c.charCodeAt(0).toString(16).toUpperCase()
+  })
+}
+
 function compileRoute (route, options) {
   var re
   var compiled
@@ -9,7 +21,7 @@ function compileRoute (route, options) {
   var querySeparator = options.querySeparator || '?'
 
   re = pathToRegexp(route, keys)
-  keys = keys.map(function (key) { return key.name.toString() })
+  keys = keys.map(getKeyName)
   compiled = pathToRegexp.compile(route)
 
   return {
@@ -23,7 +35,7 @@ function compileRoute (route, options) {
 
       if (~path.indexOf(querySeparator)) {
         if (options.query) {
-          var queryString = '_' + path.slice(path.indexOf(querySeparator) + querySeparator.length)
+          var queryString = '$' + path.slice(path.indexOf(querySeparator) + querySeparator.length)
           result = URLON.parse(queryString)
         }
         path = path.split(querySeparator)[0]
@@ -35,11 +47,9 @@ function compileRoute (route, options) {
       for (var i = 1; i < match.length; ++i) {
         var key = keys[i - 1]
         var value = match[i] && decodeURIComponent(match[i])
-        if (value && value[0] === ':') {
-          result[key] = URLON.parse(value)
-        } else {
-          result[key] = value
-        }
+        result[key] = (value && value[0] === ':')
+          ? URLON.parse(value)
+          : value
       }
 
       return result
@@ -58,26 +68,31 @@ function compileRoute (route, options) {
               break
 
             case 'object':
-              throw new Error('URL Mapper - objects are not allowed to be stringified as part of path')
+              if (values[key]) {
+                throw new Error('URL Mapper - objects are not allowed to be stringified as part of path')
+              } else { // null
+                pathParams[key] = URLON.stringify(values[key])
+              }
+              break
 
             default:
               pathParams[key] = values[key]
           }
         } else {
-          if (typeof values[key] !== 'undefined') queryParams[key] = values[key]
+          queryParams[key] = values[key]
         }
       })
 
-      var path = compiled(pathParams)
+      var path = compiled(pathParams, { encode: encodeSegment })
       var queryString = ''
 
       if (options.query) {
         if (Object.keys(queryParams).length) {
-          queryString = querySeparator + URLON.stringify(queryParams).slice(1)
+          queryString = URLON.stringify(queryParams).slice(1)
         }
       }
 
-      return path + queryString
+      return path + (queryString ? querySeparator + queryString : '')
     }
   }
 }

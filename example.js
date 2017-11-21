@@ -4,10 +4,12 @@ var object = {
   foo: 'bar',
   bar: true,
   baz: {
-    foo: true,
+    foo: false,
     bar: 2,
-    baz: ['foo', 'bar', 'baz'],
-    e: ''
+    baz: ['foo', 'bar', 'baz', true, false, undefined, null],
+    qux: '',
+    quux: null,
+    garply: undefined
   }
 }
 
