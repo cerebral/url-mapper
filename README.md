@@ -2,12 +2,6 @@
 Two way `URL` <==> `route(params)` converter with mapper.
 
 [![NPM version][npm-image]][npm-url]
-[![Build status][travis-image]][travis-url]
-[![Test coverage][coveralls-image]][coveralls-url]
-[![bitHound Score][bithound-image]][bithound-url]
-[![Commitizen friendly][commitizen-image]][commitizen-url]
-[![Semantic Release][semantic-release-image]][semantic-release-url]
-[![js-standard-style][standard-image]][standard-url]
 
 ## Installation
 
@@ -207,15 +201,3 @@ These methods will use cached methods returned by `compileFn` for given routes.
 
 [npm-image]: https://img.shields.io/npm/v/url-mapper.svg?style=flat
 [npm-url]: https://npmjs.org/package/url-mapper
-[travis-image]: https://img.shields.io/travis/cerebral/url-mapper.svg?style=flat
-[travis-url]: https://travis-ci.org/cerebral/url-mapper
-[coveralls-image]: https://img.shields.io/coveralls/cerebral/url-mapper.svg?style=flat
-[coveralls-url]: https://coveralls.io/r/cerebral/url-mapper?branch=master
-[bithound-image]: https://www.bithound.io/github/cerebral/url-mapper/badges/score.svg
-[bithound-url]: https://www.bithound.io/github/cerebral/url-mapper
-[commitizen-image]: https://img.shields.io/badge/commitizen-friendly-brightgreen.svg
-[commitizen-url]: http://commitizen.github.io/cz-cli/
-[semantic-release-image]: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg?style=flat-square
-[semantic-release-url]: https://github.com/semantic-release/semantic-release
-[standard-image]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg
-[standard-url]: http://standardjs.com/
