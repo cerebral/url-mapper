@@ -4,8 +4,8 @@
   "description": "Two way `URL` <==> `route(params)` converter with mapper",
   "main": "index.js",
   "scripts": {
-    "test": "nodeunit tests",
-    "coverage": "istanbul cover nodeunit tests"
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -27,8 +27,7 @@
   "homepage": "https://github.com/cerebral/url-mapper#readme",
   "runkitExampleFilename": "example.js",
   "devDependencies": {
-    "istanbul": "^0.4.0",
-    "nodeunit": "^0.9.2"
+    "jest": "^26.6.3"
   },
   "dependencies": {
     "path-to-regexp": "^2.1.0",
