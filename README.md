@@ -3,7 +3,10 @@
 Two way `URL` <==> `route(params)` converter with mapper.
 
 [![NPM version][npm-image]][npm-url]
-![Github Action](action-image)
+![Github Action][action-image]
+[![Test coverage][coveralls-image]][coveralls-url]
+[![Commitizen friendly][commitizen-image]][commitizen-url]
+[![Semantic Release][semantic-release-image]][semantic-release-url]
 
 ## Installation
 
@@ -207,3 +210,9 @@ These methods will use cached methods returned by `compileFn` for given routes.
 [npm-image]: https://img.shields.io/npm/v/url-mapper.svg?style=flat
 [npm-url]: https://npmjs.org/package/url-mapper
 [action-image]: https://github.com/github/docs/actions/workflows/test.yml/badge.svg?branch=master
+[coveralls-image]: https://img.shields.io/coveralls/cerebral/url-mapper.svg?style=flat
+[coveralls-url]: https://coveralls.io/r/cerebral/url-mapper?branch=master
+[commitizen-image]: https://img.shields.io/badge/commitizen-friendly-brightgreen.svg
+[commitizen-url]: http://commitizen.github.io/cz-cli/
+[semantic-release-image]: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg?style=flat-square
+[semantic-release-url]: https://github.com/semantic-release/semantic-release
