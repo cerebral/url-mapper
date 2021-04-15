@@ -2,19 +2,19 @@
 var URLON = require('urlon')
 var pathToRegexp = require('path-to-regexp')
 
-function getKeyName (key) {
+function getKeyName(key) {
   return key.name.toString()
 }
 
 // loose escaping for segment part
 // see: https://github.com/pillarjs/path-to-regexp/pull/75
-function encodeSegment (str) {
+function encodeSegment(str) {
   return encodeURI(str).replace(/[/?#'"]/g, function (c) {
     return '%' + c.charCodeAt(0).toString(16).toUpperCase()
   })
 }
 
-function compileRoute (route, options) {
+function compileRoute(route, options) {
   var re
   var compiled
   var keys = []
@@ -47,9 +47,7 @@ function compileRoute (route, options) {
       for (var i = 1; i < match.length; ++i) {
         var key = keys[i - 1]
         var value = match[i] && decodeURIComponent(match[i])
-        result[key] = (value && value[0] === ':')
-          ? URLON.parse(value)
-          : value
+        result[key] = value && value[0] === ':' ? URLON.parse(value) : value
       }
 
       return result
@@ -69,8 +67,11 @@ function compileRoute (route, options) {
 
             case 'object':
               if (values[key]) {
-                throw new Error('URL Mapper - objects are not allowed to be stringified as part of path')
-              } else { // null
+                throw new Error(
+                  'URL Mapper - objects are not allowed to be stringified as part of path'
+                )
+              } else {
+                // null
                 pathParams[key] = URLON.stringify(values[key])
               }
               break
@@ -93,7 +94,7 @@ function compileRoute (route, options) {
       }
 
       return path + (queryString ? querySeparator + queryString : '')
-    }
+    },
   }
 }
 

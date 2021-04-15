@@ -1,7 +1,9 @@
 # url-mapper
+
 Two way `URL` <==> `route(params)` converter with mapper.
 
 [![NPM version][npm-image]][npm-url]
+![Github Action](action-image)
 
 ## Installation
 
@@ -28,10 +30,11 @@ import { CoreApp, ComponentA, ComponentB, Component404 } from './components'
 
 const urlMapper = Mapper()
 
-var matchedRoute = urlMapper.map('/bar/baz/:42', { // routable part of url
+// routable part of url as first argument
+var matchedRoute = urlMapper.map('/bar/baz/:42', {
   '/foo/:id': ComponentA,
   '/bar/:list/:itemId': ComponentB,
-  '*': Component404
+  '*': Component404,
 })
 
 if (matchedRoute) {
@@ -56,6 +59,7 @@ Also see [example at Runkit Sandbox](https://npm.runkit.com/url-mapper) to try i
 At top level the `url-mapper` module exports a factory which returns default implementation of an `URL` <==> `route(params)` converter.
 
 #### Factory
+
 ##### Usage
 
 ```js
@@ -114,10 +118,10 @@ You still can manage your routes in `location.hash` but don't provide `#` symbol
 
 ##### Arguments
 
-Param | Type     | Details
-------|----------|--------
-route | `String` | Express style route definition
-url   | `String` | Routable part of url
+| Param | Type     | Details                        |
+| ----- | -------- | ------------------------------ |
+| route | `String` | Express style route definition |
+| url   | `String` | Routable part of url           |
 
 ##### Returns
 
@@ -134,10 +138,10 @@ Query part parsed with `URLON` module if { query: true } option was passed to fa
 
 ##### Arguments
 
-Param  | Type     | Details
--------|----------|--------
-route  | `String` | Express style route definition
-values | `Object` | Object used to populate parameters in route definition
+| Param  | Type     | Details                                                |
+| ------ | -------- | ------------------------------------------------------ |
+| route  | `String` | Express style route definition                         |
+| values | `Object` | Object used to populate parameters in route definition |
 
 ##### Returns
 
@@ -154,20 +158,20 @@ Properties not defined in route are stringified to query part using `URLON` modu
 
 ##### Arguments
 
-Param  | Type     | Details
--------|----------|--------
-url    | `String` | Routable part of url
-routes | `Object` | Routes to map url with
+| Param  | Type     | Details                |
+| ------ | -------- | ---------------------- |
+| url    | `String` | Routable part of url   |
+| routes | `Object` | Routes to map url with |
 
 ##### Returns
 
 `Object` - Object representing matched route with properties:
 
-Property  | Type     | Details
-----------|----------|--------
-route     | `String` | Matched `route` defined as key in `routes`
-match     | `Any`    | Value from `routes` associated with matched `route`
-values    | `Object` | Values parsed from given `url` with matched `route`
+| Property | Type     | Details                                             |
+| -------- | -------- | --------------------------------------------------- |
+| route    | `String` | Matched `route` defined as key in `routes`          |
+| match    | `Any`    | Value from `routes` associated with matched `route` |
+| values   | `Object` | Values parsed from given `url` with matched `route` |
 
 ### Matcher
 
@@ -175,6 +179,7 @@ Custom converting algoritms could be implemented by providing a custom compile f
 If you don't like default route definition format or converting algorithms, feel free to make your own.
 
 #### Factory
+
 ##### Usage
 
 ```js
@@ -184,10 +189,10 @@ var mapper = urlMapper(compileFn, options)
 
 ##### Arguments
 
-Param     | Type       | Details
-----------|------------|--------
-compileFn | `Function` | Function used by mapper to "compile" a route.
-options   | `Any`      | `Optional`. Passed to `compileFn` as second argument.
+| Param     | Type       | Details                                               |
+| --------- | ---------- | ----------------------------------------------------- |
+| compileFn | `Function` | Function used by mapper to "compile" a route.         |
+| options   | `Any`      | `Optional`. Passed to `compileFn` as second argument. |
 
 For each route mapper would call `compileFn(route, options)` and cache result internally.
 `compileFn` should return `parse(url)` and `stringify(values)` methods for any given route.
@@ -201,3 +206,4 @@ These methods will use cached methods returned by `compileFn` for given routes.
 
 [npm-image]: https://img.shields.io/npm/v/url-mapper.svg?style=flat
 [npm-url]: https://npmjs.org/package/url-mapper
+[action-image]: https://github.com/github/docs/actions/workflows/test.yml/badge.svg?branch=master
