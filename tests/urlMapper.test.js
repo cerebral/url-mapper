@@ -6,7 +6,7 @@ var urlMapper = require('../index')
 describe('mapper', function () {
   var parse = jest.fn()
   var stringify = jest.fn()
-  var compileFn = jest.fn(function compileFn (route, options, cache) {
+  var compileFn = jest.fn(function compileFn(route, options, cache) {
     parse.mockImplementation(function (url) {
       // match if url starts with route without colon
       // 'url' matches ':url'
@@ -16,7 +16,7 @@ describe('mapper', function () {
     })
     return {
       parse: parse,
-      stringify: stringify
+      stringify: stringify,
     }
   })
 
@@ -95,7 +95,7 @@ describe('mapper', function () {
     it('should pass route and options arguments to compileFn', function () {
       var options = {}
       var routes = {
-        ':url': {}
+        ':url': {},
       }
       var mapper = Mapper(compileFn, options)
 
@@ -106,7 +106,7 @@ describe('mapper', function () {
     it('should return matched route and parsed values', function () {
       var routes = {
         ':url1': 'match1',
-        ':url2': 'match2'
+        ':url2': 'match2',
       }
       var mapper = Mapper(compileFn)
 
@@ -115,8 +115,8 @@ describe('mapper', function () {
         match: 'match1',
         values: {
           route: ':url1',
-          url: 'url1'
-        }
+          url: 'url1',
+        },
       })
 
       expect(mapper.map('url2', routes)).toEqual({
@@ -124,15 +124,15 @@ describe('mapper', function () {
         match: 'match2',
         values: {
           route: ':url2',
-          url: 'url2'
-        }
+          url: 'url2',
+        },
       })
     })
 
     it('should return only first matched route and parsed values', function () {
       var routes = {
         ':url': 'match1',
-        ':url1': 'match2'
+        ':url1': 'match2',
       }
       var mapper = Mapper(compileFn)
 
@@ -141,8 +141,8 @@ describe('mapper', function () {
         match: 'match1',
         values: {
           route: ':url',
-          url: 'url11'
-        }
+          url: 'url11',
+        },
       })
     })
 
@@ -167,7 +167,7 @@ describe('urlMapper', function () {
 
       expect(mapper.parse('/:foo/:bar', '/bar/baz')).toEqual({
         foo: 'bar',
-        bar: 'baz'
+        bar: 'baz',
       })
     })
 
@@ -176,7 +176,7 @@ describe('urlMapper', function () {
 
       expect(mapper.parse('/:foo/:bar', '/bar/baz?query')).toEqual({
         foo: 'bar',
-        bar: 'baz'
+        bar: 'baz',
       })
     })
 
@@ -185,7 +185,7 @@ describe('urlMapper', function () {
 
       expect(mapper.parse('/:foo/:bar', '/bar/baz#hash')).toEqual({
         foo: 'bar',
-        bar: 'baz'
+        bar: 'baz',
       })
     })
 
@@ -198,12 +198,14 @@ describe('urlMapper', function () {
     it('should stringify object using only params defined in route', function () {
       var mapper = urlMapper()
 
-      expect(mapper.stringify('/:foo/:bar', {
-        foo: 'bar',
-        bar: 'baz',
-        baz: 'foo',
-        qux: {}
-      })).toEqual('/bar/baz')
+      expect(
+        mapper.stringify('/:foo/:bar', {
+          foo: 'bar',
+          bar: 'baz',
+          baz: 'foo',
+          qux: {},
+        })
+      ).toEqual('/bar/baz')
     })
 
     it('should parse stringified object with booleans and numbers as params defined in route', function () {
@@ -212,7 +214,7 @@ describe('urlMapper', function () {
         foo: true,
         bar: false,
         baz: 42,
-        qux: null
+        qux: null,
       }
       // URLON-like notation
       var url = '/:true/:false/:42/:null'
@@ -224,7 +226,7 @@ describe('urlMapper', function () {
     it('should properly escape unsafe symbols in segments', function () {
       var mapper = urlMapper()
       var object = {
-        foo: 'foo/?#\'"bar'
+        foo: 'foo/?#\'"bar',
       }
 
       var url = '/foo%2F%3F%23%27%22bar'
@@ -240,7 +242,7 @@ describe('urlMapper', function () {
         mapper.stringify('/:foo', {
           foo: {},
           bar: 'baz',
-          baz: 'foo'
+          baz: 'foo',
         })
       }).toThrow()
     })
@@ -252,7 +254,7 @@ describe('urlMapper', function () {
 
       expect(mapper.parse('/:foo/:bar', '/bar/baz')).toEqual({
         foo: 'bar',
-        bar: 'baz'
+        bar: 'baz',
       })
     })
 
@@ -262,7 +264,7 @@ describe('urlMapper', function () {
       expect(mapper.parse('/:foo/:bar', '/bar/baz?baz=foo')).toEqual({
         foo: 'bar',
         bar: 'baz',
-        baz: 'foo'
+        baz: 'foo',
       })
     })
 
@@ -271,13 +273,13 @@ describe('urlMapper', function () {
 
       expect(mapper.parse('/:foo/:bar', '/bar/baz#hash')).toEqual({
         foo: 'bar',
-        bar: 'baz'
+        bar: 'baz',
       })
 
       expect(mapper.parse('/:foo/:bar', '/bar/baz?baz=foo#hash')).toEqual({
         foo: 'bar',
         bar: 'baz',
-        baz: 'foo'
+        baz: 'foo',
       })
     })
 
@@ -290,19 +292,23 @@ describe('urlMapper', function () {
     it('should stringify object without query', function () {
       var mapper = urlMapper({ query: true })
 
-      expect(mapper.stringify('/:foo/:bar', {
-        foo: 'bar',
-        bar: 'baz'
-      })).toEqual('/bar/baz')
+      expect(
+        mapper.stringify('/:foo/:bar', {
+          foo: 'bar',
+          bar: 'baz',
+        })
+      ).toEqual('/bar/baz')
     })
 
     it('should not stringify undefined query params', function () {
       var mapper = urlMapper({ query: true })
 
-      expect(mapper.stringify('/:foo', {
-        foo: 'bar',
-        bar: undefined
-      })).toEqual('/bar')
+      expect(
+        mapper.stringify('/:foo', {
+          foo: 'bar',
+          bar: undefined,
+        })
+      ).toEqual('/bar')
     })
 
     it('should parse stringified object including params not defined in route', function () {
@@ -314,8 +320,8 @@ describe('urlMapper', function () {
           foo: true,
           bar: 2,
           baz: ['foo', 'bar', 'baz'],
-          e: ''
-        }
+          e: '',
+        },
       }
 
       // we do not test which url it stringified to
@@ -347,7 +353,7 @@ describe('urlMapper', function () {
 
       expect(mapper.parse('/:foo/:bar?', '/bar/')).toEqual({
         foo: 'bar',
-        bar: undefined
+        bar: undefined,
       })
     })
   })

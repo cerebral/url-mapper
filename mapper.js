@@ -1,10 +1,12 @@
-module.exports = function mapper (compileFn, options) {
-  if (typeof compileFn !== 'function') throw new Error('URL Mapper - function to compile a route expected as first argument')
+module.exports = function mapper(compileFn, options) {
+  if (typeof compileFn !== 'function') {
+    throw new Error('URL Mapper - function to compile a route expected as first argument')
+  }
 
   options = options || {}
   var cache = {}
 
-  function getCompiledRoute (route) {
+  function getCompiledRoute(route) {
     if (!cache[route]) {
       cache[route] = compileFn(route, options)
     }
@@ -12,17 +14,17 @@ module.exports = function mapper (compileFn, options) {
     return cache[route]
   }
 
-  function parse (route, url) {
+  function parse(route, url) {
     if (arguments.length < 2) throw new Error('URL Mapper - parse method expects 2 arguments')
     return getCompiledRoute(route).parse(url)
   }
 
-  function stringify (route, values) {
+  function stringify(route, values) {
     if (arguments.length < 2) throw new Error('URL Mapper - stringify method expects 2 arguments')
     return getCompiledRoute(route).stringify(values)
   }
 
-  function map (url, routes) {
+  function map(url, routes) {
     if (arguments.length < 2) throw new Error('URL Mapper - map method expects 2 arguments')
     for (var route in routes) {
       var compiled = getCompiledRoute(route)
@@ -33,7 +35,7 @@ module.exports = function mapper (compileFn, options) {
         return {
           route: route,
           match: match,
-          values: values
+          values: values,
         }
       }
     }
@@ -42,6 +44,6 @@ module.exports = function mapper (compileFn, options) {
   return {
     parse: parse,
     stringify: stringify,
-    map: map
+    map: map,
   }
 }
