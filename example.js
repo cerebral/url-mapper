@@ -9,8 +9,8 @@ var object = {
     baz: ['foo', 'bar', 'baz', true, false, undefined, null],
     qux: '',
     quux: null,
-    garply: undefined,
-  },
+    garply: undefined
+  }
 }
 
 var url = urlMapper.stringify('/:foo', object)
@@ -21,6 +21,6 @@ console.log(parsed)
 
 var mapped = urlMapper.map(url, {
   '/:foo': 'one',
-  '/:foo/bar': 'two',
+  '/:foo/bar': 'two'
 })
 console.log(mapped)

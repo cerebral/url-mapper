@@ -35,7 +35,7 @@ module.exports = function mapper(compileFn, options) {
         return {
           route: route,
           match: match,
-          values: values,
+          values: values
         }
       }
     }
@@ -44,6 +44,6 @@ module.exports = function mapper(compileFn, options) {
   return {
     parse: parse,
     stringify: stringify,
-    map: map,
+    map: map
   }
 }
