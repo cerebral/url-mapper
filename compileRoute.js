@@ -94,7 +94,7 @@ function compileRoute(route, options) {
       }
 
       return path + (queryString ? querySeparator + queryString : '')
-    },
+    }
   }
 }
 
